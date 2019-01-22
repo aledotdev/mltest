@@ -3,7 +3,7 @@ import logging.config
 
 from flask import Flask, Blueprint
 
-from breastcancer.model import load_model
+from breastcancer.model import BreastCancerModel
 from breastcancer.api.common import api
 from breastcancer.api.predictor.endpoints import ns as breast_cancer_predictor_ns
 
@@ -13,14 +13,15 @@ logging.config.fileConfig(logging_conf_path)
 log = logging.getLogger(__name__)
 
 
-def initialize_app(settings_class):
+def initialize_app(settings_class=None):
     app = Flask(__name__)
+    if settings_class is None:
+        settings_class = os.getenv('BC_SETTING_CLASS', 'breastcancer.settings.DevSettings')
+
     app.config.from_object(settings_class)
     log.info(">>>>> Setting up app config from {}".format(settings_class))
 
-    # import ipdb; ipdb.set_trace()
-    load_model(app.config['MODEL_FILE_PATH'])
-    log.info(">>>>> Loaded Breast Cancer Model {}".format(app.config['MODEL_FILE_PATH']))
+    BreastCancerModel.load_model(app.config['MODEL_FILE_PATH'])
 
     blueprint = Blueprint('api', __name__, url_prefix='/api')
     api.init_app(blueprint)
@@ -31,9 +32,9 @@ def initialize_app(settings_class):
 
 
 def main():
-    app = initialize_app(os.getenv('BC_SETTING_CLASS', 'breastcancer.settings.DevSettings'))
-    log.info(('>>>>> Starting development server at http://{}/api/'
-              .format(app.config['SERVER_NAME'])))
+    app = initialize_app()
+    log.info(('>>>>> Starting development server at http://{}/'
+              .format(app.config['FLASK_SERVER_NAME'])))
     app.run()
 
 
