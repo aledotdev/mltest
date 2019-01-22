@@ -42,3 +42,6 @@ coverage.xml
 
 # dotenv
 .env
+
+# ML
+ml/model.pkl
