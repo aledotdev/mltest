@@ -8,7 +8,7 @@ from breastcancer.api.common import api
 from breastcancer.api.predictor.endpoints import ns as breast_cancer_predictor_ns
 
 
-logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '../logging.conf'))
+logging_conf_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'logging.conf'))
 logging.config.fileConfig(logging_conf_path)
 log = logging.getLogger(__name__)
 

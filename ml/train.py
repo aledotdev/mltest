@@ -1,3 +1,5 @@
+import os
+import sys
 import pickle
 
 import pandas as pd
@@ -6,8 +8,14 @@ from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
+input_path = sys.argv[1]
 
-data = pd.read_csv('data.csv')
+try:
+    output_path = sys.argv[2]
+except IndexError:
+    output_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'model.pkl'))
+
+data = pd.read_csv(input_path)
 
 # Dropping some of the unwanted variables:
 data.drop('id', axis=1, inplace=True)
@@ -38,5 +46,5 @@ rf = RandomForestClassifier(n_estimators=18)
 
 rf = rf.fit(X_train,  y_train)
 
-with open('model.pkl', 'wb+') as model_file:
+with open(output_path, 'wb+') as model_file:
     pickle.dump(rf, model_file)

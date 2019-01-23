@@ -1,11 +1,17 @@
-import requests
+import os
+import sys
 import json
+import requests
 
 
-with open('sample.json') as data_file:
+sample_path = os.path.normpath(os.path.join(os.path.dirname(__file__), 'sample.json'))
+
+with open(sample_path) as data_file:
     data = json.loads(data_file.read())
 
-api_url = 'http://localhost:5000/api/breastcancer/predict/'
+base_url = sys.argv[1]
+
+api_url = '{}/api/breastcancer/predict/'.format(base_url)
 
 for params in data:
     response = requests.post(api_url, json=params)
