@@ -16,13 +16,18 @@ for model_arg in BreastCancerModel.get_model_args():
     arg_help = model_arg.replace('_', ' ').capitalize()
     bcp_fields[model_arg] = fields.Float(required=True, description=arg_help)
 
-bcp_resource_fields = api.model('Resource', bcp_fields)
+bcp_resource_fields = api.model('BreastCancerPredictInput', bcp_fields)
+
+bc_predict_output = api.model('BreastCancerPredictOutput', {
+    'is_maligne': fields.Boolean(description="Boolean")
+    })
 
 
 @ns.route('/')
 class BreastCancerModelPredict(Resource):
 
     @api.expect(bcp_resource_fields)
+    @api.marshal_with(bc_predict_output)
     def post(self):
         model = BreastCancerModel.get_model()
         # get the model args in order
